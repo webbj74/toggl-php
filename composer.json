@@ -1,0 +1,29 @@
+{
+    "name": "webbj74/toggl-php",
+    "type": "library",
+    "description": "An experimental PHP SDK for Toggl.",
+    "keywords": ["toggl"],
+    "homepage": "https://github.com/webbj74/toggl-php",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "See contributors",
+            "homepage": "https://github.com/webbj74/toggl-php/graphs/contributors"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0",
+        "guzzle/guzzle": "~3.0"
+    },
+    "require-dev": {
+        "phpmd/phpmd": "~1.0",
+        "phpunit/phpunit": "~3.0",
+        "satooshi/php-coveralls": "*"
+    },
+    "autoload": {
+        "psr-0": {
+            "Toggl": "src/"
+        }
+    }
+}
+
