@@ -7,6 +7,11 @@ use Guzzle\Http\Message\Response as HttpResponse;
 use Toggl\Api\TogglApiClientV8;
 use Toggl\Api\Response as ApiResponse;
 use Toggl\Common\TogglClientAuthPlugin;
+use Toggl\Test\Api\Response\ProjectTest;
+use Toggl\Test\Api\Response\ProjectsTest;
+use Toggl\Test\Api\Response\WorkspaceTest;
+use Toggl\Test\Api\Response\WorkspacesTest;
+
 
 class TogglApiClientV8Test extends \PHPUnit_Framework_TestCase
 {
@@ -113,45 +118,12 @@ class TogglApiClientV8Test extends \PHPUnit_Framework_TestCase
         $this->assertTrue($me instanceof ApiResponse\Me);
     }
 
-    private function getWorkspaceData($name = "Sample Workspace")
-    {
-        return array(
-            "id" => 3134975,
-            "name" => $name,
-            "premium" => true,
-            "admin" => true,
-            "default_hourly_rate" => 50,
-            "default_currency" => "USD",
-            "only_admins_may_create_projects" => false,
-            "only_admins_see_billable_rates" => true,
-            "rounding" => 1,
-            "rounding_minutes" => 15,
-            "at" => "2013-08-28T16:22:21+00:00",
-            "logo_url" => "my_logo.png"
-        );
-    }
 
-    private function getProjectData($workspaceId, $name = "Sample Project")
-    {
-        return array(
-            "id" => 3134975,
-            "wid" => $workspaceId,
-            "cid" => 987,
-            "name" => $name,
-            "billable" => false,
-            "is_private" => true,
-            "active" => true,
-            "at" => "2013-08-28T16:22:21+00:00",
-        );
-    }
 
     public function testWorkspacesCall()
     {
         $client = $this->getTogglApiClient();
-        $responseData = array(
-            $this->getWorkspaceData("Sample Workspace 1"),
-            $this->getWorkspaceData("Sample Workspace 2")
-        );
+        $responseData = WorkspacesTest::getWorkspacesData(101, array("Sample Workspace 1","Sample Workspace 2"));
         $this->addMockResponse($client, $responseData);
         $workspaces = $client->getWorkspaces();
         $this->assertTrue($workspaces instanceof ApiResponse\Workspaces);
@@ -197,10 +169,7 @@ class TogglApiClientV8Test extends \PHPUnit_Framework_TestCase
     {
         $client = $this->getTogglApiClient();
         $workspaceId = 101;
-        $responseData = array(
-            $this->getProjectData($workspaceId, "Sample Project 1"),
-            $this->getProjectData($workspaceId, "Sample Project 2")
-        );
+        $responseData = ProjectsTest::getProjectsData($workspaceId, array("Sample Project 1", "Sample Project 2"));
         $this->addMockResponse($client, $responseData);
         $projects = $client->getWorkspaceProjects($workspaceId);
         $this->assertTrue($projects instanceof ApiResponse\Projects);
@@ -209,4 +178,5 @@ class TogglApiClientV8Test extends \PHPUnit_Framework_TestCase
         $this->assertEquals('"Sample Project 1","Sample Project 2"', "{$projects}");
 
     }
+
 }

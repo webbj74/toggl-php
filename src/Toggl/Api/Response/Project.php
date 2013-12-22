@@ -23,4 +23,9 @@ class Project extends \ArrayObject
     {
         return $this['name'];
     }
+
+    public function isPrivate()
+    {
+        return $this['is_private'];
+    }
 }

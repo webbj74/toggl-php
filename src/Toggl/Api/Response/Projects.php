@@ -25,8 +25,8 @@ class Projects extends \ArrayObject
     public function __toString()
     {
         $names = array();
-        foreach (array_keys($this) as $name) {
-            $names[] = '"' . addcslashes($name, '"');
+        foreach (array_keys($this->getArrayCopy()) as $name) {
+            $names[] = '"' . addcslashes($name, '"') . '"';
         }
         return implode(',', $names);
     }
