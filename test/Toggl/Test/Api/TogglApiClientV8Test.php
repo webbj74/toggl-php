@@ -7,6 +7,7 @@ use Guzzle\Http\Message\Response as HttpResponse;
 use Toggl\Api\TogglApiClientV8;
 use Toggl\Api\Response as ApiResponse;
 use Toggl\Common\TogglClientAuthPlugin;
+use Toggl\Test\Api\Response\MeTest;
 use Toggl\Test\Api\Response\ProjectTest;
 use Toggl\Test\Api\Response\ProjectsTest;
 use Toggl\Test\Api\Response\WorkspaceTest;
@@ -63,7 +64,6 @@ class TogglApiClientV8Test extends \PHPUnit_Framework_TestCase
         $client->addSubscriber($mock);
     }
 
-
     /**
      * @expectedException \InvalidArgumentException
      */
@@ -107,18 +107,12 @@ class TogglApiClientV8Test extends \PHPUnit_Framework_TestCase
     public function testMeCall()
     {
         $client = $this->getTogglApiClient();
-        $responseData = array(
-            'since' => 123456789,
-            'data' => array(
-                'id' => 123,
-                'email' => 'test@example.com',
-            ));
+        $responseData = MeTest::getUserData('test@example.com');
         $this->addMockResponse($client, $responseData);
         $me = $client->me();
         $this->assertTrue($me instanceof ApiResponse\Me);
+        $this->assertEquals('test@example.com', "{$me}");
     }
-
-
 
     public function testWorkspacesCall()
     {
