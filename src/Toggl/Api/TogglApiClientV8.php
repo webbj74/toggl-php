@@ -82,4 +82,25 @@ class TogglApiClientV8 extends TogglApiClient
         return new Response\Projects($data);
     }
 
+    /**
+     * PUT https://www.toggl.com/api/v8/projects/{project_id}
+     * -d '{"project":{"name":"Changed the name","is_private":false,"cid":123398, "color": "6"}}'
+     */
+    public function updateProjectData($projectId, $data = array())
+    {
+        $variables = array(
+            'project_id' => $projectId,
+        );
+
+        if (!is_numeric($variables['project_id'])) {
+            $message = sprintf("%s expects 'project_id' param to be an integer, but was provided a %s", __METHOD__, gettype($variables['project_id']));
+            throw new \InvalidArgumentException($message);
+        }
+        if (empty($data) || !is_array($data)) {
+            $message = sprintf("%s expects 'data' to be an array, but was provided a %s", __METHOD__, gettype($data));
+            throw new \InvalidArgumentException($message);
+        }
+        $data = $this->sendPut('{+base_path}/projects/{project_id}', $variables, json_encode($data));
+        return new Response\Project($data);
+    }
 }

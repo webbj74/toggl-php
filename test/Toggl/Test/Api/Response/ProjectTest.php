@@ -9,7 +9,7 @@ class ProjectTest extends \PHPUnit_Framework_TestCase
     public static function getProjectData($workspaceId = 101, $name = "Sample Project")
     {
         return array(
-            "id" => 3134975,
+            "id" => 101,
             "wid" => $workspaceId,
             "cid" => 987,
             "name" => $name,

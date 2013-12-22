@@ -174,4 +174,44 @@ class TogglApiClientV8Test extends \PHPUnit_Framework_TestCase
         $this->assertEquals('Sample Project 1', "{$projects["Sample Project 1"]}");
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testpdateProjectDataCallRequireNumericProject()
+    {
+        $client = $this->getTogglApiClient();
+        $this->addMockResponse($client, array());
+        $client->updateProjectData("foo", array('project' => array('is_private' => false)));
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testpdateProjectDataCallRequireNonEmptyData()
+    {
+        $client = $this->getTogglApiClient();
+        $this->addMockResponse($client, array());
+        $client->updateProjectData(1, array());
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testpdateProjectDataCallRequireArrayData()
+    {
+        $client = $this->getTogglApiClient();
+        $this->addMockResponse($client, array());
+        $client->updateProjectData(1, "foo");
+    }
+
+    public function testUpdateProjectDataCall()
+    {
+        $workspaceId = 101;
+        $responseData = ProjectTest::getProjectData($workspaceId, "Sample Project 1");
+
+        $client = $this->getTogglApiClient();
+        $this->addMockResponse($client, $responseData);
+        $project = $client->updateProjectData(101, array('project' => array('is_private' => false)));
+        $this->assertTrue($project instanceof ApiResponse\Project);
+    }
 }
