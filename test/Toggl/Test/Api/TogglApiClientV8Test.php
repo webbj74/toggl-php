@@ -129,6 +129,7 @@ class TogglApiClientV8Test extends \PHPUnit_Framework_TestCase
         $this->assertTrue($workspaces instanceof ApiResponse\Workspaces);
         $this->assertTrue($workspaces["Sample Workspace 1"] instanceof ApiResponse\Workspace);
         $this->assertEquals('"Sample Workspace 1","Sample Workspace 2"', "{$workspaces}");
+        $this->assertEquals('Sample Workspace 1', "{$workspaces["Sample Workspace 1"]}");
     }
 
     /**
@@ -176,7 +177,7 @@ class TogglApiClientV8Test extends \PHPUnit_Framework_TestCase
         $this->assertTrue($projects["Sample Project 1"] instanceof ApiResponse\Project);
         $this->assertEquals($workspaceId, $projects["Sample Project 1"]['wid']);
         $this->assertEquals('"Sample Project 1","Sample Project 2"', "{$projects}");
-
+        $this->assertEquals('Sample Project 1', "{$projects["Sample Project 1"]}");
     }
 
 }

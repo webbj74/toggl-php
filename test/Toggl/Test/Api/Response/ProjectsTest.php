@@ -20,6 +20,6 @@ class ProjectsTest extends \PHPUnit_Framework_TestCase
      */
     public function testProjectsConstructor()
     {
-        new ApiResponse\Project("foo");
+        new ApiResponse\Projects("foo");
     }
 }
