@@ -49,4 +49,11 @@ class TogglApiClientV8 extends TogglApiClient
         $data = $this->sendGet('{+base_path}/me');
         return new Response\Me($data);
     }
+
+    public function getWorkspaces()
+    {
+        $data = $this->sendGet('{+base_path}/workspaces');
+        return new Response\Workspaces($data);
+    }
+
 }

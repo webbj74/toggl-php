@@ -113,4 +113,35 @@ class TogglApiClientV8Test extends \PHPUnit_Framework_TestCase
         $this->assertTrue($me instanceof ApiResponse\Me);
     }
 
+    private function getWorkspaceData($name = "Sample Workspace")
+    {
+        return array(
+            "id" => 3134975,
+            "name" => $name,
+            "premium" => true,
+            "admin" => true,
+            "default_hourly_rate" => 50,
+            "default_currency" => "USD",
+            "only_admins_may_create_projects" => false,
+            "only_admins_see_billable_rates" => true,
+            "rounding" => 1,
+            "rounding_minutes" => 15,
+            "at" => "2013-08-28T16:22:21+00:00",
+            "logo_url" => "my_logo.png"
+        );
+    }
+
+    public function testWorkspacesCall()
+    {
+        $client = $this->getTogglApiClient();
+        $responseData = array(
+            $this->getWorkspaceData("Sample Workspace 1"),
+            $this->getWorkspaceData("Sample Workspace 2")
+        );
+        $this->addMockResponse($client, $responseData);
+        $workspaces = $client->getWorkspaces();
+        $this->assertTrue($workspaces instanceof ApiResponse\Workspaces);
+        $this->assertTrue($workspaces["Sample Workspace 1"] instanceof ApiResponse\Workspace);
+    }
+
 }
