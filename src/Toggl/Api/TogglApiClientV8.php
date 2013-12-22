@@ -28,6 +28,10 @@ class TogglApiClientV8 extends TogglApiClient
             'base_path' => self::BASE_PATH,
         );
 
+        if (isset($config['authentication_method']) && $config['authentication_method'] == 'token') {
+            $defaults['authentication_value'] = 'api_token';
+        }
+
         $config = Collection::fromConfig($config, $defaults, $required);
         $client = new static($config->get('base_url'), $config);
         $client->setDefaultHeaders(array(

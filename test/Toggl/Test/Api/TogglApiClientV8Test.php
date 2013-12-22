@@ -74,10 +74,19 @@ class TogglApiClientV8Test extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException \InvalidArgumentException
      */
-    public function testRequireAuthenticationValue()
+    public function testRequireAuthenticationValueForEmailAuth()
     {
         TogglApiClientV8::factory(array(
                 'authentication_method' => 'email',
+                'authentication_key' => 'test-username',
+                'base_path' => '/api/v8'
+            ));
+    }
+
+    public function testDontRequireAuthenticationValueForTokenAuth()
+    {
+        TogglApiClientV8::factory(array(
+                'authentication_method' => 'token',
                 'authentication_key' => 'test-username',
                 'base_path' => '/api/v8'
             ));
