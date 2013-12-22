@@ -19,9 +19,22 @@ class MeTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException Guzzle\Common\Exception\UnexpectedValueException
      */
-    public function testMeConstructor()
+    public function testMeConstructorRequireArray()
     {
-        new ApiResponse\Workspace("foo");
+        new ApiResponse\Me("foo");
     }
 
+    public function testMeConstructor()
+    {
+        $data = self::getUserData();
+        $me = new ApiResponse\Me($data);
+        $this->assertTrue($me instanceof ApiResponse\Me);
+    }
+
+    public function testMeConstructorFlatArray()
+    {
+        $data = self::getUserData();
+        $me = new ApiResponse\Me($data['data']);
+        $this->assertTrue($me instanceof ApiResponse\Me);
+    }
 }
