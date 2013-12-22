@@ -4,7 +4,7 @@ namespace Toggl\Api\Response;
 
 use Guzzle\Common\Exception\UnexpectedValueException;
 
-class Workspace extends \ArrayObject
+class Project extends \ArrayObject
 {
     public function __construct($data)
     {

@@ -131,6 +131,20 @@ class TogglApiClientV8Test extends \PHPUnit_Framework_TestCase
         );
     }
 
+    private function getProjectData($workspaceId, $name = "Sample Project")
+    {
+        return array(
+            "id" => 3134975,
+            "wid" => $workspaceId,
+            "cid" => 987,
+            "name" => $name,
+            "billable" => false,
+            "is_private" => true,
+            "active" => true,
+            "at" => "2013-08-28T16:22:21+00:00",
+        );
+    }
+
     public function testWorkspacesCall()
     {
         $client = $this->getTogglApiClient();
@@ -142,6 +156,57 @@ class TogglApiClientV8Test extends \PHPUnit_Framework_TestCase
         $workspaces = $client->getWorkspaces();
         $this->assertTrue($workspaces instanceof ApiResponse\Workspaces);
         $this->assertTrue($workspaces["Sample Workspace 1"] instanceof ApiResponse\Workspace);
+        $this->assertEquals('"Sample Workspace 1","Sample Workspace 2"', "{$workspaces}");
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testWorkspaceProjectsCallRequireNumericWorkspaceId()
+    {
+        $client = $this->getTogglApiClient();
+        $this->addMockResponse($client, array());
+        $client->getWorkspaceProjects("one");
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testWorkspaceProjectsCallRequireEnumActive()
+    {
+        $client = $this->getTogglApiClient();
+        $this->addMockResponse($client, array());
+        $client->getWorkspaceProjects(1, array(
+                'active' => 'foo'
+            ));
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testWorkspaceProjectsCallRequireEnumActualHours()
+    {
+        $client = $this->getTogglApiClient();
+        $this->addMockResponse($client, array());
+        $client->getWorkspaceProjects(1, array(
+                'actual_hours' => 'foo'
+            ));
+    }
+
+    public function testWorkspaceProjectsCall()
+    {
+        $client = $this->getTogglApiClient();
+        $workspaceId = 101;
+        $responseData = array(
+            $this->getProjectData($workspaceId, "Sample Project 1"),
+            $this->getProjectData($workspaceId, "Sample Project 2")
+        );
+        $this->addMockResponse($client, $responseData);
+        $projects = $client->getWorkspaceProjects($workspaceId);
+        $this->assertTrue($projects instanceof ApiResponse\Projects);
+        $this->assertTrue($projects["Sample Project 1"] instanceof ApiResponse\Project);
+        $this->assertEquals($workspaceId, $projects["Sample Project 1"]['wid']);
+        $this->assertEquals('"Sample Project 1","Sample Project 2"', "{$projects}");
+
+    }
 }

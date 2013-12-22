@@ -56,4 +56,30 @@ class TogglApiClientV8 extends TogglApiClient
         return new Response\Workspaces($data);
     }
 
+    public function getWorkspaceProjects($workspaceId, $params = array())
+    {
+        $defaults = array(
+            'workspace_id' => $workspaceId,
+            'active' => 'both',
+            'actual_hours' => 'false',
+        );
+        $variables = array_merge($defaults,$params);
+        if (!is_numeric($variables['workspace_id'])) {
+            $message = sprintf("%s expects 'workspace_id' param to be an integer, but was provided a %s", __METHOD__, gettype($variables['workspace_id']));
+            throw new \InvalidArgumentException($message);
+        }
+        $active = $variables['active'];
+        if (!((is_string($active) && in_array($active, array('true','false','both'))) || is_bool($active))) {
+            $message = sprintf("%s expects 'active' param to be one of true/false/both, but was provided %s", __METHOD__, $active);
+            throw new \InvalidArgumentException($message);
+        }
+        $actual_hours = $variables['actual_hours'];
+        if (!((is_string($actual_hours) && in_array($actual_hours, array('true','false'))) || is_bool( $actual_hours))) {
+            $message = sprintf("%s expects 'actual_hours' param to be one of true/false, but was provided a %s", __METHOD__, $actual_hours);
+            throw new \InvalidArgumentException($message);
+        }
+        $data = $this->sendGet('{+base_path}/workspaces/{workspace_id}/projects?active={active}&actual_hours={actual_hours}', $variables);
+        return new Response\Projects($data);
+    }
+
 }

@@ -4,19 +4,19 @@ namespace Toggl\Api\Response;
 
 use Guzzle\Common\Exception\UnexpectedValueException;
 
-class Workspaces extends \ArrayObject
+class Projects extends \ArrayObject
 {
     public function __construct($data)
     {
         if (!is_array($data)) {
             throw new UnexpectedValueException('Expecting API response to be an array');
         }
-        $workspaces = array();
-        foreach ($data as $workspace) {
-            if (isset($workspace['name']))
-            $workspaces[$workspace['name']] = new Workspace($workspace);
+        $projects = array();
+        foreach ($data as $project) {
+            if (isset($project['name']))
+                $projects[$project['name']] = new Project($project);
         }
-        parent::__construct($workspaces);
+        parent::__construct($projects);
     }
 
     /**
