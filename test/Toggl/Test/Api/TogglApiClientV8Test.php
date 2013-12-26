@@ -12,6 +12,7 @@ use Toggl\Test\Api\Response\ProjectTest;
 use Toggl\Test\Api\Response\ProjectsTest;
 use Toggl\Test\Api\Response\WorkspaceTest;
 use Toggl\Test\Api\Response\WorkspacesTest;
+use Toggl\Test\Api\Response\WorkspaceUsersTest;
 
 
 class TogglApiClientV8Test extends \PHPUnit_Framework_TestCase
@@ -173,6 +174,21 @@ class TogglApiClientV8Test extends \PHPUnit_Framework_TestCase
         $this->assertEquals('"Sample Project 1","Sample Project 2"', "{$projects}");
         $this->assertEquals('Sample Project 1', "{$projects["Sample Project 1"]}");
     }
+
+    public function testWorkspaceUsersCall()
+    {
+        $client = $this->getTogglApiClient();
+        $workspaceId = 101;
+        $responseData = WorkspaceUsersTest::getWorkspaceUsersData($workspaceId, array("Sample Name 1", "Sample Name 2"));
+        $this->addMockResponse($client, $responseData);
+        $users = $client->getWorkspaceProjects($workspaceId);
+        $this->assertTrue($users instanceof ApiResponse\Projects);
+        $this->assertTrue($users["Sample Name 1"] instanceof ApiResponse\Project);
+        $this->assertEquals($workspaceId, $users["Sample Name 1"]['wid']);
+        $this->assertEquals('"Sample Name 1","Sample Name 2"', "{$users}");
+        $this->assertEquals('Sample Name 1', "{$users["Sample Name 1"]}");
+    }
+
 
     /**
      * @expectedException \InvalidArgumentException

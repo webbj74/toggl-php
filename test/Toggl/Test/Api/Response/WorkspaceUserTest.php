@@ -28,9 +28,15 @@ class WorkspaceUserTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException Guzzle\Common\Exception\UnexpectedValueException
      */
-    public function testProjectConstructor()
+    public function testWorkspaceUserConstructorRequiresArray()
     {
         new ApiResponse\WorkspaceUser("foo");
     }
 
+    public function testWorkspaceUserConstructor()
+    {
+        $user = new ApiResponse\WorkspaceUser(self::getWorkspaceUserData(101, "Sample User"));
+        $this->assertTrue($user instanceof ApiResponse\WorkspaceUser);
+        $this->assertEquals("Sample User", "{$user}");
+    }
 }

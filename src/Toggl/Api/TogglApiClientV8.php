@@ -50,6 +50,11 @@ class TogglApiClientV8 extends TogglApiClient
         return new Response\Me($data);
     }
 
+    public static function isValidWorkspaceId($workspaceId)
+    {
+        return is_numeric($workspaceId);
+    }
+
     public function getWorkspaces()
     {
         $data = $this->sendGet('{+base_path}/workspaces');
@@ -64,7 +69,7 @@ class TogglApiClientV8 extends TogglApiClient
             'actual_hours' => 'false',
         );
         $variables = array_merge($defaults,$params);
-        if (!is_numeric($variables['workspace_id'])) {
+        if (!self::isValidWorkspaceId($variables['workspace_id'])) {
             $message = sprintf("%s expects 'workspace_id' param to be an integer, but was provided a %s", __METHOD__, gettype($variables['workspace_id']));
             throw new \InvalidArgumentException($message);
         }
@@ -80,6 +85,29 @@ class TogglApiClientV8 extends TogglApiClient
         }
         $data = $this->sendGet('{+base_path}/workspaces/{workspace_id}/projects?active={active}&actual_hours={actual_hours}', $variables);
         return new Response\Projects($data);
+    }
+
+    /**
+     * Get workspace users
+     * https://github.com/toggl/toggl_api_docs/blob/master/chapters/workspace_users.md#get-workspace-users
+     *
+     * @param string|int $workspaceId
+     * @return \Toggl\Api\Response\WorkspaceUsers
+     * @throws \InvalidArgumentException
+     */
+    public function getWorkspaceUsers($workspaceId)
+    {
+        $variables = array(
+            'workspace_id' => $workspaceId
+        );
+
+        if (!self::isValidWorkspaceId($variables['workspace_id'])) {
+            $message = sprintf("%s expects 'workspace_id' param to be an integer, but was provided a %s", __METHOD__, gettype($variables['workspace_id']));
+            throw new \InvalidArgumentException($message);
+        }
+
+        $data = $this->sendGet('{+base_path}/workspaces/{workspace_id}/workspace_users', $variables);
+        return new Response\WorkspaceUsers($data);
     }
 
     /**
