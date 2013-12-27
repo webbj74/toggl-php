@@ -89,11 +89,12 @@ class TogglApiClientV8 extends TogglApiClient
 
     /**
      * Get workspace users
-     * https://github.com/toggl/toggl_api_docs/blob/master/chapters/workspace_users.md#get-workspace-users
      *
      * @param string|int $workspaceId
      * @return \Toggl\Api\Response\WorkspaceUsers
      * @throws \InvalidArgumentException
+     * 
+     * @see https://github.com/toggl/toggl_api_docs/blob/master/chapters/workspace_users.md#get-workspace-users
      */
     public function getWorkspaceUsers($workspaceId)
     {
@@ -111,8 +112,45 @@ class TogglApiClientV8 extends TogglApiClient
     }
 
     /**
-     * PUT https://www.toggl.com/api/v8/projects/{project_id}
-     * -d '{"project":{"name":"Changed the name","is_private":false,"cid":123398, "color": "6"}}'
+     * Create project
+     *
+     * @param array $data
+     * @return \Toggl\Api\Response\WorkspaceUsers
+     * @throws \InvalidArgumentException
+     *
+     * @see https://github.com/toggl/toggl_api_docs/blob/master/chapters/projects.md#create-project
+     */
+    public function createProject($data)
+    {
+        if (empty($data) || !is_array($data)) {
+            $message = sprintf("%s expects 'data' to be an array, but was provided a %s", __METHOD__, gettype($data));
+            throw new \InvalidArgumentException($message);
+        }
+
+        // formatting object
+        if (empty($data['project'])) {
+            $data = array('project' => $data);
+        }
+
+        // further validation
+        if (empty($data['project']['name']) || empty($data['project']['wid'])) {
+            $message = sprintf("%s expects 'data' to contain a name and wid", __METHOD__);
+            throw new \InvalidArgumentException($message);
+        }
+
+        $data = $this->sendPost('{+base_path}/projects', array(), json_encode($data));
+        return new Response\Project($data);
+    }
+
+    /**
+     * Update project data
+     *
+     * @param int $projectId
+     * @param array $data
+     * @return \Toggl\Api\Response\WorkspaceUsers
+     * @throws \InvalidArgumentException
+     *
+     * @see https://github.com/toggl/toggl_api_docs/blob/master/chapters/projects.md#update-project-data
      */
     public function updateProjectData($projectId, $data = array())
     {
