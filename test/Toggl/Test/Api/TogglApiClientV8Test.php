@@ -202,7 +202,31 @@ class TogglApiClientV8Test extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException \InvalidArgumentException
      */
-    public function testpdateProjectDataCallRequireNumericProject()
+    public function testCreateProjectCallRequireArrayData()
+    {
+        $client = $this->getTogglApiClient();
+        $this->addMockResponse($client, array());
+        $client->createProject("foo");
+    }
+
+    public function testCreateProjectCall()
+    {
+        $workspaceId = 101;
+        $responseData = ProjectTest::getProjectData($workspaceId, "Sample Project 1");
+
+        $client = $this->getTogglApiClient();
+        $this->addMockResponse($client, $responseData);
+        $project = $client->createProject(array(
+                'wid' => $workspaceId,
+                'name' => 'Sample Project 1'
+            ));
+        $this->assertTrue($project instanceof ApiResponse\Project);
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testUpdateProjectDataCallRequireNumericProject()
     {
         $client = $this->getTogglApiClient();
         $this->addMockResponse($client, array());
@@ -212,7 +236,7 @@ class TogglApiClientV8Test extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException \InvalidArgumentException
      */
-    public function testpdateProjectDataCallRequireNonEmptyData()
+    public function testUpdateProjectDataCallRequireNonEmptyData()
     {
         $client = $this->getTogglApiClient();
         $this->addMockResponse($client, array());
@@ -222,7 +246,7 @@ class TogglApiClientV8Test extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException \InvalidArgumentException
      */
-    public function testpdateProjectDataCallRequireArrayData()
+    public function testUpdateProjectDataCallRequireArrayData()
     {
         $client = $this->getTogglApiClient();
         $this->addMockResponse($client, array());
@@ -239,4 +263,5 @@ class TogglApiClientV8Test extends \PHPUnit_Framework_TestCase
         $project = $client->updateProjectData(101, array('project' => array('is_private' => false)));
         $this->assertTrue($project instanceof ApiResponse\Project);
     }
+
 }
