@@ -12,6 +12,9 @@ class Project extends \ArrayObject
             throw new UnexpectedValueException('Expecting API response to be an array');
         }
         else {
+            if (isset($data['data'])) {
+                $data = $data['data'];
+            }
             parent::__construct($data);
         }
     }

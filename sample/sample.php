@@ -51,6 +51,14 @@ function main() {
         foreach ($projects as $project) {
             echo " * {$project}\n";
         }
+
+        $createdProject = $toggl->createProject(array(
+                'wid' => $workspace['id'],
+                'name' => "toggl-php sample project " . time(),
+                'is_private' => false,
+                'billable' => true,
+            ));
+        echo " * NEW: {$createdProject}\n";
     }
 }
 

@@ -50,6 +50,36 @@ class TogglApiClientV8 extends TogglApiClient
         return new Response\Me($data);
     }
 
+    /**
+     * Create project
+     * https://github.com/toggl/toggl_api_docs/blob/master/chapters/projects.md#create-project
+     *
+     * @param array $data
+     * @return \Toggl\Api\Response\WorkspaceUsers
+     * @throws \InvalidArgumentException
+     */
+    public function createProject($data)
+    {
+        if (empty($data) || !is_array($data)) {
+            $message = sprintf("%s expects 'data' to be an array, but was provided a %s", __METHOD__, gettype($data));
+            throw new \InvalidArgumentException($message);
+        }
+
+        // formatting object
+        if (empty($data['project'])) {
+            $data = array('project' => $data);
+        }
+
+        // further validation
+        if (empty($data['project']['name']) || empty($data['project']['wid'])) {
+            $message = sprintf("%s expects 'data' to contain a name and wid", __METHOD__);
+            throw new \InvalidArgumentException($message);
+        }
+
+        $data = $this->sendPost('{+base_path}/projects', array(), json_encode($data));
+        return new Response\Project($data);
+    }
+
     public static function isValidWorkspaceId($workspaceId)
     {
         return is_numeric($workspaceId);
