@@ -28,6 +28,12 @@ class ProjectTest extends \PHPUnit_Framework_TestCase
         new ApiResponse\Project("foo");
     }
 
+    public function testProjectConstructorWithAbstractedData()
+    {
+        $project = new ApiResponse\Project(array('data' => self::getProjectData()));
+        $this->assertTrue($project->isPrivate());
+    }
+
     public function testProjectIsPrivate()
     {
         $project = new ApiResponse\Project(self::getProjectData());

@@ -209,6 +209,16 @@ class TogglApiClientV8Test extends \PHPUnit_Framework_TestCase
         $client->createProject("foo");
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testCreateProjectCallRequireArrayDataElements()
+    {
+        $client = $this->getTogglApiClient();
+        $this->addMockResponse($client, array());
+        $client->createProject(array('foo'));
+    }
+
     public function testCreateProjectCall()
     {
         $workspaceId = 101;
