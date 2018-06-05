@@ -2,15 +2,14 @@
 
 namespace Toggl\Test\Api;
 
-use Guzzle\Plugin\Mock\MockPlugin;
-use Guzzle\Http\Message\Response as HttpResponse;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\Psr7\Response as HttpResponse;
 use Toggl\Api\TogglApiClientV8;
 use Toggl\Api\Response as ApiResponse;
 use Toggl\Common\TogglClientAuthPlugin;
 use Toggl\Test\Api\Response\MeTest;
 use Toggl\Test\Api\Response\ProjectTest;
 use Toggl\Test\Api\Response\ProjectsTest;
-use Toggl\Test\Api\Response\WorkspaceTest;
 use Toggl\Test\Api\Response\WorkspacesTest;
 use Toggl\Test\Api\Response\WorkspaceUsersTest;
 

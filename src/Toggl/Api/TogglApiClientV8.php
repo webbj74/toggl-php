@@ -2,7 +2,6 @@
 
 namespace Toggl\Api;
 
-use Guzzle\Common\Collection;
 use Toggl\Common\TogglClientAuthPlugin;
 
 class TogglApiClientV8 extends TogglApiClient
@@ -32,8 +31,11 @@ class TogglApiClientV8 extends TogglApiClient
             $defaults['authentication_value'] = 'api_token';
         }
 
-        $config = Collection::fromConfig($config, $defaults, $required);
-        $client = new static($config->get('base_url'), $config);
+        $config = $config + $defaults;
+        if (array_diff($required, array_keys($config))) {
+          throw new \InvalidArgumentException("Config is missing required key(s).");
+        }
+        $client = new static($config);
         $client->setDefaultHeaders(array(
                 'Content-Type' => 'application/json; charset=utf-8',
             ));
@@ -115,7 +117,7 @@ class TogglApiClientV8 extends TogglApiClient
      * Create project
      *
      * @param array $data
-     * @return \Toggl\Api\Response\WorkspaceUsers
+     * @return \Toggl\Api\Response\Project
      * @throws \InvalidArgumentException
      *
      * @see https://github.com/toggl/toggl_api_docs/blob/master/chapters/projects.md#create-project
@@ -147,7 +149,7 @@ class TogglApiClientV8 extends TogglApiClient
      *
      * @param int $projectId
      * @param array $data
-     * @return \Toggl\Api\Response\WorkspaceUsers
+     * @return \Toggl\Api\Response\Project
      * @throws \InvalidArgumentException
      *
      * @see https://github.com/toggl/toggl_api_docs/blob/master/chapters/projects.md#update-project-data
