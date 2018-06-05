@@ -2,8 +2,7 @@
 
 namespace Toggl\Common;
 
-use Guzzle\Common\Event;
-use Guzzle\Http\Message\Request;
+use GuzzleHttp\Psr7\Request;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -60,9 +59,9 @@ class TogglClientAuthPlugin implements EventSubscriberInterface
     /**
      * Request before-send event handler.
      *
-     * @param \Guzzle\Common\Event $event
+     * @param \Symfony\Component\EventDispatcher\EventSubscriberInterface $event
      */
-    public function onRequestBeforeSend(Event $event)
+    public function onRequestBeforeSend(EventSubscriberInterface $event)
     {
         $this->setAuth($event['request']);
     }
@@ -72,10 +71,15 @@ class TogglClientAuthPlugin implements EventSubscriberInterface
      * authentication scheme becomes more complex. Separating it out from the
      * event handler allows us to test this code more easily.
      *
-     * @param \Guzzle\Http\Message\Request $request
+     * @param \GuzzleHttp\Psr7\Request $request
+     *
+     * @return \GuzzleHttp\Psr7\MessageTrait $trait
      */
     public function setAuth(Request $request)
     {
-        $request->setAuth($this->username, $this->password);
+        return $request->withHeader(
+          'Authorization',
+          'Basic ' . base64_encode($this->username . ':' . $this->password)
+        );
     }
 }
