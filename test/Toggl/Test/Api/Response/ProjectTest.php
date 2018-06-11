@@ -21,7 +21,7 @@ class ProjectTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Guzzle\Common\Exception\UnexpectedValueException
+     * @expectedException GuzzleHttp\Exception\BadResponseException
      */
     public function testProjectConstructor()
     {

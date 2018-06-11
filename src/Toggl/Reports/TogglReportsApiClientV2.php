@@ -2,7 +2,6 @@
 
 namespace Toggl\Reports;
 
-use Guzzle\Common\Collection;
 use Toggl\Common\TogglClientAuthPlugin;
 
 class TogglReportsApiClientV2 extends TogglReportsApiClient
@@ -14,26 +13,26 @@ class TogglReportsApiClientV2 extends TogglReportsApiClient
      *
      * @return \Toggl\Common\TogglClient
      */
-    public static function factory($config = array())
+    public static function factory($config = [])
     {
-        $required = array(
+        $required = [
             'authentication_method',
             'authentication_key',
             'authentication_value',
             'base_path',
-        );
+        ];
 
-        $defaults = array(
+        $defaults = [
             'base_url' => self::BASE_URL,
             'base_path' => self::BASE_PATH,
-        );
+        ];
 
         if (isset($config['authentication_method']) && $config['authentication_method'] == 'token') {
             $defaults['authentication_value'] = 'api_token';
         }
 
-        $config = Collection::fromConfig($config, $defaults, $required);
-        $client = new static($config->get('base_url'), $config);
+        $config = self::fromConfig($config, $defaults, $required);
+        $client = new static($config);
         $client->setDefaultHeaders(array(
                 'Content-Type' => 'application/json; charset=utf-8',
             ));

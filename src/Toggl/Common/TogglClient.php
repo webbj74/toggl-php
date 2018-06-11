@@ -2,7 +2,7 @@
 
 namespace Toggl\Common;
 
-use Guzzle\Service\Client;
+use GuzzleHttp\Client;
 
 class TogglClient extends Client
 {
@@ -17,7 +17,7 @@ class TogglClient extends Client
      *
      * @return array
      *
-     * @throws \Guzzle\Http\Exception\ClientErrorResponseException
+     * @throws \GuzzleHttp\Exception\ClientException
      *
      * @see http://docs.guzzlephp.org/en/latest/http-client/uri-templates.html
      */
@@ -36,7 +36,7 @@ class TogglClient extends Client
      *
      * @return array
      *
-     * @throws \Guzzle\Http\Exception\ClientErrorResponseException
+     * @throws \GuzzleHttp\Exception\ClientException
      *
      * @see http://docs.guzzlephp.org/en/latest/http-client/uri-templates.html
      */
@@ -55,7 +55,7 @@ class TogglClient extends Client
      *
      * @return array
      *
-     * @throws \Guzzle\Http\Exception\ClientErrorResponseException
+     * @throws \GuzzleHttp\Exception\ClientException
      *
      * @see http://docs.guzzlephp.org/en/latest/http-client/uri-templates.html
      */
