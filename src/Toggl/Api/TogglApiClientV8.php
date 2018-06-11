@@ -13,7 +13,7 @@ class TogglApiClientV8 extends TogglApiClient
      *
      * @return \Toggl\Common\TogglClient
      */
-    public static function factory($config = array())
+    public static function factory($config = [])
     {
         $required = array(
             'authentication_method',

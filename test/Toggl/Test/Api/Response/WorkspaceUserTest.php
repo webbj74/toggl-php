@@ -26,7 +26,7 @@ class WorkspaceUserTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException GuzzleHttp\Exception\BadResponseException
+     * @expectedException \GuzzleHttp\Exception\BadResponseException
      */
     public function testWorkspaceUserConstructorRequiresArray()
     {
