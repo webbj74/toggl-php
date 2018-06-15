@@ -81,11 +81,11 @@ class TogglApiClientV8Test extends \PHPUnit_Framework_TestCase
      */
     public function testRequireAuthenticationValueForEmailAuth()
     {
-        TogglApiClientV8::factory(array(
+        TogglApiClientV8::factory([
                 'authentication_method' => 'email',
                 'authentication_key' => 'test-username',
                 'base_path' => '/api/v8'
-            ));
+            ]);
     }
 
     public function testDontRequireAuthenticationValueForTokenAuth()
