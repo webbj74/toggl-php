@@ -16,7 +16,7 @@ class WorkspacesTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \GuzzleHttp\Exception\BadResponseException
+     * @expectedException \UnexpectedValueException
      */
     public function testWorkspacesConstructor()
     {

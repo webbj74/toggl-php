@@ -25,6 +25,8 @@ class TogglApiClientV8 extends TogglApiClient
         $defaults = array(
             'base_url' => self::BASE_URL,
             'base_path' => self::BASE_PATH,
+            'headers' => ['Content-Type' => 'application/json; charset=utf-8'],
+            'auth' => [],
         );
 
         if (isset($config['authentication_method']) && $config['authentication_method'] == 'token') {
@@ -36,19 +38,13 @@ class TogglApiClientV8 extends TogglApiClient
           throw new \InvalidArgumentException("Config is missing required key(s).");
         }
         $client = new static($config);
-        $client->setDefaultHeaders(array(
-                'Content-Type' => 'application/json; charset=utf-8',
-            ));
-
-        $plugin = new TogglClientAuthPlugin($config->get('authentication_key'), $config->get('authentication_value'));
-        $client->addSubscriber($plugin);
 
         return $client;
     }
 
     public function me()
     {
-        $data = $this->sendGet('{+base_path}/me');
+        $data = $this->sendGet(self::BASE_PATH . '/me');
         return new Response\Me($data);
     }
 
@@ -59,7 +55,7 @@ class TogglApiClientV8 extends TogglApiClient
 
     public function getWorkspaces()
     {
-        $data = $this->sendGet('{+base_path}/workspaces');
+        $data = $this->sendGet(self::BASE_PATH . '/workspaces');
         return new Response\Workspaces($data);
     }
 
@@ -85,7 +81,7 @@ class TogglApiClientV8 extends TogglApiClient
             $message = sprintf("%s expects 'actual_hours' param to be one of true/false, but was provided a %s", __METHOD__, $actual_hours);
             throw new \InvalidArgumentException($message);
         }
-        $data = $this->sendGet('{+base_path}/workspaces/{workspace_id}/projects?active={active}&actual_hours={actual_hours}', $variables);
+        $data = $this->sendGet(self::BASE_PATH . '/workspaces/{workspace_id}/projects?active={active}&actual_hours={actual_hours}', $variables);
         return new Response\Projects($data);
     }
 
@@ -109,7 +105,7 @@ class TogglApiClientV8 extends TogglApiClient
             throw new \InvalidArgumentException($message);
         }
 
-        $data = $this->sendGet('{+base_path}/workspaces/{workspace_id}/workspace_users', $variables);
+        $data = $this->sendGet(self::BASE_PATH . '/workspaces/{workspace_id}/workspace_users', $variables);
         return new Response\WorkspaceUsers($data);
     }
 
@@ -140,7 +136,7 @@ class TogglApiClientV8 extends TogglApiClient
             throw new \InvalidArgumentException($message);
         }
 
-        $data = $this->sendPost('{+base_path}/projects', array(), json_encode($data));
+        $data = $this->sendPost(self::BASE_PATH . '/projects', [], json_encode($data));
         return new Response\Project($data);
     }
 
@@ -154,11 +150,11 @@ class TogglApiClientV8 extends TogglApiClient
      *
      * @see https://github.com/toggl/toggl_api_docs/blob/master/chapters/projects.md#update-project-data
      */
-    public function updateProjectData($projectId, $data = array())
+    public function updateProjectData($projectId, $data = [])
     {
-        $variables = array(
+        $variables = [
             'project_id' => $projectId,
-        );
+        ];
 
         if (!is_numeric($variables['project_id'])) {
             $message = sprintf("%s expects 'project_id' param to be an integer, but was provided a %s", __METHOD__, gettype($variables['project_id']));
@@ -168,7 +164,7 @@ class TogglApiClientV8 extends TogglApiClient
             $message = sprintf("%s expects 'data' to be an array, but was provided a %s", __METHOD__, gettype($data));
             throw new \InvalidArgumentException($message);
         }
-        $data = $this->sendPut('{+base_path}/projects/{project_id}', $variables, json_encode($data));
+        $data = $this->sendPut(self::BASE_PATH .'/projects/'. $projectId, $variables, json_encode($data));
         return new Response\Project($data);
     }
 }

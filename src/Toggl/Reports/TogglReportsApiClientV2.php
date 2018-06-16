@@ -2,8 +2,6 @@
 
 namespace Toggl\Reports;
 
-use Toggl\Common\TogglClientAuthPlugin;
-
 class TogglReportsApiClientV2 extends TogglReportsApiClient
 {
     const BASE_PATH = '/reports/api/v2';
@@ -25,20 +23,19 @@ class TogglReportsApiClientV2 extends TogglReportsApiClient
         $defaults = [
             'base_url' => self::BASE_URL,
             'base_path' => self::BASE_PATH,
+            'headers' => ['Content-Type' => 'application/json; charset=utf-8'],
+            'auth' => [],
         ];
 
         if (isset($config['authentication_method']) && $config['authentication_method'] == 'token') {
             $defaults['authentication_value'] = 'api_token';
         }
 
-        $config = self::fromConfig($config, $defaults, $required);
+        $config = $config + $defaults;
+        if (array_diff($required, array_keys($config))) {
+          throw new \InvalidArgumentException("Config is missing required key(s).");
+        }
         $client = new static($config);
-        $client->setDefaultHeaders(array(
-                'Content-Type' => 'application/json; charset=utf-8',
-            ));
-
-        $plugin = new TogglClientAuthPlugin($config->get('authentication_key'), $config->get('authentication_value'));
-        $client->addSubscriber($plugin);
 
         return $client;
     }

@@ -3,10 +3,10 @@
 namespace Toggl\Test\Api;
 
 use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response as HttpResponse;
 use Toggl\Api\TogglApiClientV8;
 use Toggl\Api\Response as ApiResponse;
-use Toggl\Common\TogglClientAuthPlugin;
 use Toggl\Test\Api\Response\MeTest;
 use Toggl\Test\Api\Response\ProjectTest;
 use Toggl\Test\Api\Response\ProjectsTest;
@@ -17,51 +17,24 @@ use Toggl\Test\Api\Response\WorkspaceUsersTest;
 class TogglApiClientV8Test extends \PHPUnit_Framework_TestCase
 {
     /**
+     * @param array $responseData
+     *
      * @return \Toggl\Api\TogglApiClientV8
      */
-    public function getTogglApiClient()
+    public function getTogglApiClient($responseData = [])
     {
-        return TogglApiClientV8::factory(array(
+        $responseData = json_encode($responseData);
+        $mock = new MockHandler([
+          new HttpResponse(200, [], $responseData),
+        ]);
+        $handler = HandlerStack::create($mock);
+
+        return TogglApiClientV8::factory([
                 'authentication_method' => 'email',
                 'authentication_key' => 'test@example.com',
                 'authentication_value' => 'api_token',
-            ));
-    }
-
-    /**
-     * Helper function that returns the event listener.
-     *
-     * @param \Toggl\Api\TogglApiClientV8 $client
-     *
-     * @return \Toggl\Common\TogglClientAuthPlugin
-     *
-     * @throws \UnexpectedValueException
-     */
-    public function getRegisteredAuthPlugin(TogglApiClientV8 $client)
-    {
-        $listeners = $client->getEventDispatcher()->getListeners('request.before_send');
-        foreach ($listeners as $listener) {
-            if (isset($listener[0]) && $listener[0] instanceof TogglClientAuthPlugin) {
-                return $listener[0];
-            }
-        }
-
-        throw new \UnexpectedValueException('Expecting subscriber Toggl\Common\TogglClientAuthPlugin to be registered');
-    }
-
-    /**
-     * @param \Toggl\Api\TogglApiClientV8 $client
-     * @param array $responseData
-     */
-    public function addMockResponse(TogglApiClientV8 $client, array $responseData)
-    {
-        $mock = new MockPlugin();
-
-        $response = new HttpResponse(200);
-        $response->setBody(json_encode($responseData));
-
-        $mock->addResponse($response);
-        $client->addSubscriber($mock);
+                'handler' => $handler,
+            ]);
     }
 
     /**
@@ -97,18 +70,10 @@ class TogglApiClientV8Test extends \PHPUnit_Framework_TestCase
             ]);
     }
 
-    public function testHasAuthPlugin()
-    {
-        $client = $this->getTogglApiClient();
-        $hasPlugin = (boolean) $this->getRegisteredAuthPlugin($client);
-        $this->assertTrue($hasPlugin);
-    }
-
     public function testMeCall()
     {
-        $client = $this->getTogglApiClient();
         $responseData = MeTest::getUserData('test@example.com');
-        $this->addMockResponse($client, $responseData);
+        $client = $this->getTogglApiClient($responseData);
         $me = $client->me();
         $this->assertTrue($me instanceof ApiResponse\Me);
         $this->assertEquals('test@example.com', "{$me}");
@@ -116,9 +81,8 @@ class TogglApiClientV8Test extends \PHPUnit_Framework_TestCase
 
     public function testWorkspacesCall()
     {
-        $client = $this->getTogglApiClient();
         $responseData = WorkspacesTest::getWorkspacesData(101, array("Sample Workspace 1","Sample Workspace 2"));
-        $this->addMockResponse($client, $responseData);
+        $client = $this->getTogglApiClient($responseData);
         $workspaces = $client->getWorkspaces();
         $this->assertTrue($workspaces instanceof ApiResponse\Workspaces);
         $this->assertTrue($workspaces["Sample Workspace 1"] instanceof ApiResponse\Workspace);
@@ -132,7 +96,6 @@ class TogglApiClientV8Test extends \PHPUnit_Framework_TestCase
     public function testWorkspaceProjectsCallRequireNumericWorkspaceId()
     {
         $client = $this->getTogglApiClient();
-        $this->addMockResponse($client, array());
         $client->getWorkspaceProjects("one");
     }
 
@@ -142,7 +105,6 @@ class TogglApiClientV8Test extends \PHPUnit_Framework_TestCase
     public function testWorkspaceProjectsCallRequireEnumActive()
     {
         $client = $this->getTogglApiClient();
-        $this->addMockResponse($client, array());
         $client->getWorkspaceProjects(1, array(
                 'active' => 'foo'
             ));
@@ -154,7 +116,6 @@ class TogglApiClientV8Test extends \PHPUnit_Framework_TestCase
     public function testWorkspaceProjectsCallRequireEnumActualHours()
     {
         $client = $this->getTogglApiClient();
-        $this->addMockResponse($client, array());
         $client->getWorkspaceProjects(1, array(
                 'actual_hours' => 'foo'
             ));
@@ -162,10 +123,10 @@ class TogglApiClientV8Test extends \PHPUnit_Framework_TestCase
 
     public function testWorkspaceProjectsCall()
     {
-        $client = $this->getTogglApiClient();
+
         $workspaceId = 101;
         $responseData = ProjectsTest::getProjectsData($workspaceId, array("Sample Project 1", "Sample Project 2"));
-        $this->addMockResponse($client, $responseData);
+        $client = $this->getTogglApiClient($responseData);
         $projects = $client->getWorkspaceProjects($workspaceId);
         $this->assertTrue($projects instanceof ApiResponse\Projects);
         $this->assertTrue($projects["Sample Project 1"] instanceof ApiResponse\Project);
@@ -180,16 +141,15 @@ class TogglApiClientV8Test extends \PHPUnit_Framework_TestCase
     public function testWorkspaceUsersCallRequireNumericWorkspaceId()
     {
         $client = $this->getTogglApiClient();
-        $this->addMockResponse($client, array());
         $client->getWorkspaceUsers("one");
     }
 
     public function testWorkspaceUsersCall()
     {
-        $client = $this->getTogglApiClient();
+
         $workspaceId = 101;
         $responseData = WorkspaceUsersTest::getWorkspaceUsersData($workspaceId, array("Sample Name 1", "Sample Name 2"));
-        $this->addMockResponse($client, $responseData);
+        $client = $this->getTogglApiClient($responseData);
         $users = $client->getWorkspaceUsers($workspaceId);
         $this->assertTrue($users instanceof ApiResponse\WorkspaceUsers);
         $this->assertTrue($users["Sample Name 1"] instanceof ApiResponse\WorkspaceUser);
@@ -204,7 +164,6 @@ class TogglApiClientV8Test extends \PHPUnit_Framework_TestCase
     public function testCreateProjectCallRequireArrayData()
     {
         $client = $this->getTogglApiClient();
-        $this->addMockResponse($client, array());
         $client->createProject("foo");
     }
 
@@ -214,7 +173,6 @@ class TogglApiClientV8Test extends \PHPUnit_Framework_TestCase
     public function testCreateProjectCallRequireArrayDataElements()
     {
         $client = $this->getTogglApiClient();
-        $this->addMockResponse($client, array());
         $client->createProject(array('foo'));
     }
 
@@ -222,9 +180,7 @@ class TogglApiClientV8Test extends \PHPUnit_Framework_TestCase
     {
         $workspaceId = 101;
         $responseData = ProjectTest::getProjectData($workspaceId, "Sample Project 1");
-
-        $client = $this->getTogglApiClient();
-        $this->addMockResponse($client, $responseData);
+        $client = $this->getTogglApiClient($responseData);
         $project = $client->createProject(array(
                 'wid' => $workspaceId,
                 'name' => 'Sample Project 1'
@@ -238,7 +194,6 @@ class TogglApiClientV8Test extends \PHPUnit_Framework_TestCase
     public function testUpdateProjectDataCallRequireNumericProject()
     {
         $client = $this->getTogglApiClient();
-        $this->addMockResponse($client, array());
         $client->updateProjectData("foo", array('project' => array('is_private' => false)));
     }
 
@@ -248,7 +203,6 @@ class TogglApiClientV8Test extends \PHPUnit_Framework_TestCase
     public function testUpdateProjectDataCallRequireNonEmptyData()
     {
         $client = $this->getTogglApiClient();
-        $this->addMockResponse($client, array());
         $client->updateProjectData(1, array());
     }
 
@@ -258,7 +212,6 @@ class TogglApiClientV8Test extends \PHPUnit_Framework_TestCase
     public function testUpdateProjectDataCallRequireArrayData()
     {
         $client = $this->getTogglApiClient();
-        $this->addMockResponse($client, array());
         $client->updateProjectData(1, "foo");
     }
 
@@ -266,9 +219,7 @@ class TogglApiClientV8Test extends \PHPUnit_Framework_TestCase
     {
         $workspaceId = 101;
         $responseData = ProjectTest::getProjectData($workspaceId, "Sample Project 1");
-
-        $client = $this->getTogglApiClient();
-        $this->addMockResponse($client, $responseData);
+        $client = $this->getTogglApiClient($responseData);
         $project = $client->updateProjectData(101, array('project' => array('is_private' => false)));
         $this->assertTrue($project instanceof ApiResponse\Project);
     }

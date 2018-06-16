@@ -11,7 +11,7 @@ class Me extends \ArrayObject
         }
 
         // Flatten the V8 response in a sane way
-        if(isset($data['data'])) {
+        if (isset($data['data'])) {
             if (isset($data['since'])) {
                 $data['data']['since'] = $data['since'];
             }

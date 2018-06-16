@@ -18,12 +18,10 @@ class TogglClient extends Client
      * @return array
      *
      * @throws \GuzzleHttp\Exception\ClientException
-     *
-     * @see http://docs.guzzlephp.org/en/latest/http-client/uri-templates.html
      */
-    public function sendGet($path, $variables = array())
+    public function sendGet($path, $variables = [])
     {
-        return $this->get(array($path, $variables))->send()->json();
+        return json_decode($this->get($path, $variables)->getBody(), TRUE);
     }
 
     /**
@@ -37,12 +35,11 @@ class TogglClient extends Client
      * @return array
      *
      * @throws \GuzzleHttp\Exception\ClientException
-     *
-     * @see http://docs.guzzlephp.org/en/latest/http-client/uri-templates.html
      */
-    public function sendPut($path, $variables = array(), $body)
+    public function sendPut($path, $variables = [], $body)
     {
-        return $this->put(array($path, $variables), null, $body)->send()->json();
+        $variables['body'] = $body;
+        return json_decode($this->put($path, $variables)->getBody(), TRUE);
     }
 
     /**
@@ -56,11 +53,10 @@ class TogglClient extends Client
      * @return array
      *
      * @throws \GuzzleHttp\Exception\ClientException
-     *
-     * @see http://docs.guzzlephp.org/en/latest/http-client/uri-templates.html
      */
-    public function sendPost($path, $variables = array(), $body)
+    public function sendPost($path, $variables = [], $body)
     {
-        return $this->post(array($path, $variables), null, $body)->send()->json();
+        $variables['body'] = $body;
+        return json_decode($this->post($path, $variables)->getBody(), TRUE);
     }
 }
