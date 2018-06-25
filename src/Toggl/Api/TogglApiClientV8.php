@@ -2,7 +2,6 @@
 
 namespace Toggl\Api;
 
-use Guzzle\Common\Collection;
 use Toggl\Common\TogglClientAuthPlugin;
 
 class TogglApiClientV8 extends TogglApiClient
@@ -14,7 +13,7 @@ class TogglApiClientV8 extends TogglApiClient
      *
      * @return \Toggl\Common\TogglClient
      */
-    public static function factory($config = array())
+    public static function factory($config = [])
     {
         $required = array(
             'authentication_method',
@@ -24,29 +23,36 @@ class TogglApiClientV8 extends TogglApiClient
         );
 
         $defaults = array(
-            'base_url' => self::BASE_URL,
+            'base_uri' => self::BASE_URL,
             'base_path' => self::BASE_PATH,
+            'headers' => ['Content-Type' => 'application/json; charset=utf-8'],
+            'auth' => [],
         );
 
         if (isset($config['authentication_method']) && $config['authentication_method'] == 'token') {
             $defaults['authentication_value'] = 'api_token';
         }
 
-        $config = Collection::fromConfig($config, $defaults, $required);
-        $client = new static($config->get('base_url'), $config);
-        $client->setDefaultHeaders(array(
-                'Content-Type' => 'application/json; charset=utf-8',
-            ));
+        $config = $config + $defaults;
+        if (array_diff($required, array_keys($config))) {
+          throw new \InvalidArgumentException("Config is missing required key(s)." . print_r(array_diff($required, array_keys($config)),1));
+        }
 
-        $plugin = new TogglClientAuthPlugin($config->get('authentication_key'), $config->get('authentication_value'));
-        $client->addSubscriber($plugin);
+        $config['auth'] = [
+           $config['authentication_key'],
+           $config['authentication_value'],
+           'Basic',
+        ];
+        unset($config['authentication_key'], $config['authentication_value'], $config['authentication_method']);
+
+        $client = new static($config);
 
         return $client;
     }
 
     public function me()
     {
-        $data = $this->sendGet('{+base_path}/me');
+        $data = $this->sendGet(self::BASE_PATH . '/me');
         return new Response\Me($data);
     }
 
@@ -57,7 +63,7 @@ class TogglApiClientV8 extends TogglApiClient
 
     public function getWorkspaces()
     {
-        $data = $this->sendGet('{+base_path}/workspaces');
+        $data = $this->sendGet(self::BASE_PATH . '/workspaces');
         return new Response\Workspaces($data);
     }
 
@@ -68,7 +74,7 @@ class TogglApiClientV8 extends TogglApiClient
             'active' => 'both',
             'actual_hours' => 'false',
         );
-        $variables = array_merge($defaults,$params);
+        $variables = array_merge($defaults, $params);
         if (!self::isValidWorkspaceId($variables['workspace_id'])) {
             $message = sprintf("%s expects 'workspace_id' param to be an integer, but was provided a %s", __METHOD__, gettype($variables['workspace_id']));
             throw new \InvalidArgumentException($message);
@@ -83,7 +89,14 @@ class TogglApiClientV8 extends TogglApiClient
             $message = sprintf("%s expects 'actual_hours' param to be one of true/false, but was provided a %s", __METHOD__, $actual_hours);
             throw new \InvalidArgumentException($message);
         }
-        $data = $this->sendGet('{+base_path}/workspaces/{workspace_id}/projects?active={active}&actual_hours={actual_hours}', $variables);
+
+        $path = sprintf("%s/workspaces/%s/projects?active=%s&actual_hours=%s",
+            self::BASE_PATH,
+            $variables['workspace_id'],
+            $variables['active'],
+            $variables['actual_hours']
+          );
+        $data = $this->sendGet($path, $variables);
         return new Response\Projects($data);
     }
 
@@ -107,7 +120,7 @@ class TogglApiClientV8 extends TogglApiClient
             throw new \InvalidArgumentException($message);
         }
 
-        $data = $this->sendGet('{+base_path}/workspaces/{workspace_id}/workspace_users', $variables);
+        $data = $this->sendGet(self::BASE_PATH . '/workspaces/{workspace_id}/workspace_users', $variables);
         return new Response\WorkspaceUsers($data);
     }
 
@@ -115,7 +128,7 @@ class TogglApiClientV8 extends TogglApiClient
      * Create project
      *
      * @param array $data
-     * @return \Toggl\Api\Response\WorkspaceUsers
+     * @return \Toggl\Api\Response\Project
      * @throws \InvalidArgumentException
      *
      * @see https://github.com/toggl/toggl_api_docs/blob/master/chapters/projects.md#create-project
@@ -138,7 +151,7 @@ class TogglApiClientV8 extends TogglApiClient
             throw new \InvalidArgumentException($message);
         }
 
-        $data = $this->sendPost('{+base_path}/projects', array(), json_encode($data));
+        $data = $this->sendPost(self::BASE_PATH . '/projects', [], json_encode($data));
         return new Response\Project($data);
     }
 
@@ -147,16 +160,16 @@ class TogglApiClientV8 extends TogglApiClient
      *
      * @param int $projectId
      * @param array $data
-     * @return \Toggl\Api\Response\WorkspaceUsers
+     * @return \Toggl\Api\Response\Project
      * @throws \InvalidArgumentException
      *
      * @see https://github.com/toggl/toggl_api_docs/blob/master/chapters/projects.md#update-project-data
      */
-    public function updateProjectData($projectId, $data = array())
+    public function updateProjectData($projectId, $data = [])
     {
-        $variables = array(
+        $variables = [
             'project_id' => $projectId,
-        );
+        ];
 
         if (!is_numeric($variables['project_id'])) {
             $message = sprintf("%s expects 'project_id' param to be an integer, but was provided a %s", __METHOD__, gettype($variables['project_id']));
@@ -166,7 +179,7 @@ class TogglApiClientV8 extends TogglApiClient
             $message = sprintf("%s expects 'data' to be an array, but was provided a %s", __METHOD__, gettype($data));
             throw new \InvalidArgumentException($message);
         }
-        $data = $this->sendPut('{+base_path}/projects/{project_id}', $variables, json_encode($data));
+        $data = $this->sendPut(self::BASE_PATH .'/projects/'. $projectId, $variables, json_encode($data));
         return new Response\Project($data);
     }
 }

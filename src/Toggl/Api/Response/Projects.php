@@ -2,14 +2,12 @@
 
 namespace Toggl\Api\Response;
 
-use Guzzle\Common\Exception\UnexpectedValueException;
-
 class Projects extends \ArrayObject
 {
     public function __construct($data)
     {
         if (!is_array($data)) {
-            throw new UnexpectedValueException('Expecting API response to be an array');
+            throw new \UnexpectedValueException('Expecting API response to be an array');
         }
         $projects = array();
         foreach ($data as $project) {
