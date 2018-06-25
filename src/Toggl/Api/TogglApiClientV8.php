@@ -23,7 +23,7 @@ class TogglApiClientV8 extends TogglApiClient
         );
 
         $defaults = array(
-            'base_url' => self::BASE_URL,
+            'base_uri' => self::BASE_URL,
             'base_path' => self::BASE_PATH,
             'headers' => ['Content-Type' => 'application/json; charset=utf-8'],
             'auth' => [],
@@ -35,8 +35,16 @@ class TogglApiClientV8 extends TogglApiClient
 
         $config = $config + $defaults;
         if (array_diff($required, array_keys($config))) {
-          throw new \InvalidArgumentException("Config is missing required key(s).");
+          throw new \InvalidArgumentException("Config is missing required key(s)." . print_r(array_diff($required, array_keys($config)),1));
         }
+
+        $config['auth'] = [
+           $config['authentication_key'],
+           $config['authentication_value'],
+           'Basic',
+        ];
+        unset($config['authentication_key'], $config['authentication_value'], $config['authentication_method']);
+
         $client = new static($config);
 
         return $client;
@@ -66,7 +74,7 @@ class TogglApiClientV8 extends TogglApiClient
             'active' => 'both',
             'actual_hours' => 'false',
         );
-        $variables = array_merge($defaults,$params);
+        $variables = array_merge($defaults, $params);
         if (!self::isValidWorkspaceId($variables['workspace_id'])) {
             $message = sprintf("%s expects 'workspace_id' param to be an integer, but was provided a %s", __METHOD__, gettype($variables['workspace_id']));
             throw new \InvalidArgumentException($message);
@@ -81,7 +89,14 @@ class TogglApiClientV8 extends TogglApiClient
             $message = sprintf("%s expects 'actual_hours' param to be one of true/false, but was provided a %s", __METHOD__, $actual_hours);
             throw new \InvalidArgumentException($message);
         }
-        $data = $this->sendGet(self::BASE_PATH . '/workspaces/{workspace_id}/projects?active={active}&actual_hours={actual_hours}', $variables);
+
+        $path = sprintf("%s/workspaces/%s/projects?active=%s&actual_hours=%s",
+            self::BASE_PATH,
+            $variables['workspace_id'],
+            $variables['active'],
+            $variables['actual_hours']
+          );
+        $data = $this->sendGet($path, $variables);
         return new Response\Projects($data);
     }
 
