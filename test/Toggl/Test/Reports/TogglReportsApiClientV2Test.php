@@ -5,10 +5,11 @@ namespace Toggl\Test\Reports;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response as HttpResponse;
+use PHPUnit\Framework\TestCase;
 use Toggl\Reports\TogglReportsApiClientV2;
 
 
-class TogglReportsApiClientV2Test extends \PHPUnit_Framework_TestCase
+class TogglReportsApiClientV2Test extends TestCase
 {
     /**
      * @param array $responseData

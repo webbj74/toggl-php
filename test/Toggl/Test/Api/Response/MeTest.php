@@ -2,9 +2,10 @@
 
 namespace Toggl\Test\Api\Response;
 
+use PHPUnit\Framework\TestCase;
 use Toggl\Api\Response as ApiResponse;
 
-class MeTest extends \PHPUnit_Framework_TestCase
+class MeTest extends TestCase
 {
     public static function getUserData($email = 'test@example.com')
     {

@@ -2,9 +2,10 @@
 
 namespace Toggl\Test\Api\Response;
 
+use PHPUnit\Framework\TestCase;
 use Toggl\Api\Response as ApiResponse;
 
-class WorkspaceTest extends \PHPUnit_Framework_TestCase
+class WorkspaceTest extends TestCase
 {
     public static function getWorkspaceData($workspaceId = 101, $name = "Sample Workspace")
     {

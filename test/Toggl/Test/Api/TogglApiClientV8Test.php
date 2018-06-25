@@ -5,6 +5,7 @@ namespace Toggl\Test\Api;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response as HttpResponse;
+use PHPUnit\Framework\TestCase;
 use Toggl\Api\TogglApiClientV8;
 use Toggl\Api\Response as ApiResponse;
 use Toggl\Test\Api\Response\MeTest;
@@ -14,7 +15,7 @@ use Toggl\Test\Api\Response\WorkspacesTest;
 use Toggl\Test\Api\Response\WorkspaceUsersTest;
 
 
-class TogglApiClientV8Test extends \PHPUnit_Framework_TestCase
+class TogglApiClientV8Test extends TestCase
 {
     /**
      * @param array $responseData
