@@ -64,34 +64,4 @@ class TogglReportsApiClientV2 extends TogglReportsApiClient
         return $data;
     }
 
-   /**
-    * Validate configuration keys, and add default values where missing.
-    *
-    * @param array $config
-    *   Configuration values to apply.
-    * @param array $defaults
-    *   Default parameters.
-    * @param array $required
-    *   Required parameter names.
-    *
-    * @return array
-    *   Configuration array.
-    *
-    * @throws \InvalidArgumentException if a parameter is missing.
-    */
-    protected static function fromConfig(
-        array $config = [],
-        array $defaults = [],
-        array $required = []
-    ) {
-        $data = $config + $defaults;
-        if ($missing = array_diff($required, array_keys($data))) {
-            throw new \InvalidArgumentException(
-                'Config is missing the following keys: ' .
-                implode(', ', $missing));
-        }
-
-        return $data;
-    }
-
 }
