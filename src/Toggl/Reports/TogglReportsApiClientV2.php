@@ -33,7 +33,7 @@ class TogglReportsApiClientV2 extends TogglReportsApiClient
 
         $config = $config + $defaults;
         if (array_diff($required, array_keys($config))) {
-          throw new \InvalidArgumentException("Config is missing required key(s).");
+            throw new \InvalidArgumentException("Config is missing required key(s).");
         }
 
         $config['auth'] = [
@@ -60,10 +60,10 @@ class TogglReportsApiClientV2 extends TogglReportsApiClient
             'user_agent' => 'jonathan.webb@acquia.com',
         );
         $paramString = self::BASE_PATH . '/summary?workspace_id={workspace_id}&user_agent={user_agent}';
-        foreach(array_keys($params) as $param) {
+        foreach (array_keys($params) as $param) {
             $paramString .= sprintf("&%s={%s}", $param, $param);
         }
-        $variables = array_merge($defaults,$params);
+        $variables = array_merge($defaults, $params);
         if (!self::isValidWorkspaceId($variables['workspace_id'])) {
             $message = sprintf("%s expects 'workspace_id' param to be an integer, but was provided a %s", __METHOD__, gettype($variables['workspace_id']));
             throw new \InvalidArgumentException($message);
@@ -71,5 +71,4 @@ class TogglReportsApiClientV2 extends TogglReportsApiClient
         $data = $this->sendGet($paramString, $variables);
         return $data;
     }
-
 }

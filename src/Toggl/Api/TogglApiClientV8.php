@@ -35,7 +35,7 @@ class TogglApiClientV8 extends TogglApiClient
 
         $config = $config + $defaults;
         if (array_diff($required, array_keys($config))) {
-          throw new \InvalidArgumentException("Config is missing required key(s)." . print_r(array_diff($required, array_keys($config)),1));
+            throw new \InvalidArgumentException("Config is missing required key(s)." . print_r(array_diff($required, array_keys($config)), 1));
         }
 
         $config['auth'] = [
@@ -85,17 +85,18 @@ class TogglApiClientV8 extends TogglApiClient
             throw new \InvalidArgumentException($message);
         }
         $actual_hours = $variables['actual_hours'];
-        if (!((is_string($actual_hours) && in_array($actual_hours, array('true','false'))) || is_bool( $actual_hours))) {
+        if (!((is_string($actual_hours) && in_array($actual_hours, array('true','false'))) || is_bool($actual_hours))) {
             $message = sprintf("%s expects 'actual_hours' param to be one of true/false, but was provided a %s", __METHOD__, $actual_hours);
             throw new \InvalidArgumentException($message);
         }
 
-        $path = sprintf("%s/workspaces/%s/projects?active=%s&actual_hours=%s",
+        $path = sprintf(
+            "%s/workspaces/%s/projects?active=%s&actual_hours=%s",
             self::BASE_PATH,
             $variables['workspace_id'],
             $variables['active'],
             $variables['actual_hours']
-          );
+        );
         $data = $this->sendGet($path, $variables);
         return new Response\Projects($data);
     }
@@ -106,7 +107,7 @@ class TogglApiClientV8 extends TogglApiClient
      * @param string|int $workspaceId
      * @return \Toggl\Api\Response\WorkspaceUsers
      * @throws \InvalidArgumentException
-     * 
+     *
      * @see https://github.com/toggl/toggl_api_docs/blob/master/chapters/workspace_users.md#get-workspace-users
      */
     public function getWorkspaceUsers($workspaceId)

@@ -23,7 +23,7 @@ class TogglClient extends Client
     public function sendGet($path, $variables = [])
     {
         $path = uri_template($path, $variables);
-        return json_decode($this->get($path, $variables)->getBody(), TRUE);
+        return json_decode($this->get($path, $variables)->getBody(), true);
     }
 
     /**
@@ -42,7 +42,7 @@ class TogglClient extends Client
     {
         $path = uri_template($path, $variables);
         $variables['body'] = $body;
-        return json_decode($this->put($path, $variables)->getBody(), TRUE);
+        return json_decode($this->put($path, $variables)->getBody(), true);
     }
 
     /**
@@ -61,6 +61,6 @@ class TogglClient extends Client
     {
         $path = uri_template($path, $variables);
         $variables['body'] = $body;
-        return json_decode($this->post($path, $variables)->getBody(), TRUE);
+        return json_decode($this->post($path, $variables)->getBody(), true);
     }
 }

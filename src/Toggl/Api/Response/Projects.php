@@ -11,8 +11,9 @@ class Projects extends \ArrayObject
         }
         $projects = array();
         foreach ($data as $project) {
-            if (isset($project['name']))
+            if (isset($project['name'])) {
                 $projects[$project['name']] = new Project($project);
+            }
         }
         parent::__construct($projects);
     }
