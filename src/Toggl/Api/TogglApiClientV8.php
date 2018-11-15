@@ -15,19 +15,19 @@ class TogglApiClientV8 extends TogglApiClient
      */
     public static function factory($config = [])
     {
-        $required = array(
+        $required = [
             'authentication_method',
             'authentication_key',
             'authentication_value',
             'base_path',
-        );
+        ];
 
-        $defaults = array(
+        $defaults = [
             'base_uri' => self::BASE_URL,
             'base_path' => self::BASE_PATH,
             'headers' => ['Content-Type' => 'application/json; charset=utf-8'],
             'auth' => [],
-        );
+        ];
 
         if (isset($config['authentication_method']) && $config['authentication_method'] == 'token') {
             $defaults['authentication_value'] = 'api_token';
