@@ -8,8 +8,7 @@ class Project extends \ArrayObject
     {
         if (!is_array($data)) {
             throw new \UnexpectedValueException('Expecting API response to be an array');
-        }
-        else {
+        } else {
             if (isset($data['data'])) {
                 $data = $data['data'];
             }

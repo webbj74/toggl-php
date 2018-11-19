@@ -8,8 +8,7 @@ class Workspace extends \ArrayObject
     {
         if (!is_array($data)) {
             throw new \UnexpectedValueException('Expecting API response to be an array');
-        }
-        else {
+        } else {
             parent::__construct($data);
         }
     }

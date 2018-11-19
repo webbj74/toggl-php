@@ -16,8 +16,7 @@ class Me extends \ArrayObject
                 $data['data']['since'] = $data['since'];
             }
             parent::__construct($data['data']);
-        }
-        else {
+        } else {
             parent::__construct($data);
         }
     }

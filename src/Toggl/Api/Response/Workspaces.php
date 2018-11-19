@@ -11,8 +11,9 @@ class Workspaces extends \ArrayObject
         }
         $workspaces = array();
         foreach ($data as $workspace) {
-            if (isset($workspace['name']))
-            $workspaces[$workspace['name']] = new Workspace($workspace);
+            if (isset($workspace['name'])) {
+                $workspaces[$workspace['name']] = new Workspace($workspace);
+            }
         }
         parent::__construct($workspaces);
     }
