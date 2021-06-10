@@ -1,6 +1,6 @@
 <?php
 /**
- * https://www.toggl.com/api/v8/workspaces/777/workspace_users
+ * https://api.track.toggl.com/api/v8/workspaces/777/workspace_users
  */
 
 namespace Toggl\Api\Response;
