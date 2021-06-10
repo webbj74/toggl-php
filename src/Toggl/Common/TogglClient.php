@@ -7,7 +7,7 @@ use function GuzzleHttp\uri_template;
 
 class TogglClient extends Client
 {
-    const BASE_URL = 'https://www.toggl.com';
+    const BASE_URL = 'https://api.track.toggl.com';
 
     /**
      * Helper method to send a GET request and return parsed JSON.
