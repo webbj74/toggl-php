@@ -1,10 +1,16 @@
 language: php
 
 php:
-  - "7.1"
-  - "7.2"
+  - "7.3"
+  - "7.4"
+  - "8.0"
+env:
+  - GUZZLEHTTP="^6.3"
+  - GUZZLEHTTP="^7.0"
+  - GUZZLEHTTP="^7.3"
 
 before_script:
+  - composer require guzzlehttp/guzzle:${GUZZLEHTTP} --no-update
   - composer install --prefer-dist --dev
 
 after_script:
