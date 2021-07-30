@@ -64,11 +64,13 @@ class TogglApiClientV8Test extends TestCase
 
     public function testDontRequireAuthenticationValueForTokenAuth()
     {
-        TogglApiClientV8::factory([
+        $this->assertInstanceOf(TogglApiClientV8::class,
+            TogglApiClientV8::factory([
                 'authentication_method' => 'token',
                 'authentication_key' => 'test-username',
                 'base_path' => '/api/v8',
-            ]);
+            ])
+        );
     }
 
     public function testMeCall()

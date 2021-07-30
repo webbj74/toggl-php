@@ -57,11 +57,13 @@ class TogglReportsApiClientV2Test extends TestCase
 
     public function testDontRequireAuthenticationValueForTokenAuth()
     {
-        TogglReportsApiClientV2::factory([
+        $this->assertInstanceOf(TogglReportsApiClientV2::class,
+            TogglReportsApiClientV2::factory([
                 'authentication_method' => 'token',
                 'authentication_key' => 'test-username',
                 'base_path' => '/reports/api/v2'
-            ]);
+            ])
+        );
     }
 
     /**
