@@ -5,7 +5,7 @@ php:
     #- "8.0"
 env:
   - GUZZLEHTTP="^6.3"
-    #- GUZZLEHTTP="^7.0"
+  - GUZZLEHTTP="^7.0"
     #- GUZZLEHTTP="^7.3"
 
 before_script:
