@@ -13,7 +13,8 @@
     ],
     "require": {
         "php": "^7.1|^8.0",
-        "guzzlehttp/guzzle": "^6.3"
+        "guzzlehttp/guzzle": "^6.3|^7.0",
+        "guzzlehttp/uri-template": "*"
     },
     "require-dev": {
         "phpmd/phpmd": "~1.0",

@@ -13,3 +13,7 @@ app/config/parameters.ini
 app/config/parameters.yml
 composer.lock
 build
+
+/.idea
+/.phpunit.result.cache
+

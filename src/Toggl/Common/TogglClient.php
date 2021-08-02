@@ -3,7 +3,7 @@
 namespace Toggl\Common;
 
 use GuzzleHttp\Client;
-use function GuzzleHttp\uri_template;
+use GuzzleHttp\UriTemplate\UriTemplate;
 
 class TogglClient extends Client
 {
@@ -22,7 +22,7 @@ class TogglClient extends Client
      */
     public function sendGet($path, $variables = [])
     {
-        $path = uri_template($path, $variables);
+        $path = (new UriTemplate())->expand($path, $variables);
         return json_decode($this->get($path, $variables)->getBody(), true);
     }
 
@@ -40,7 +40,7 @@ class TogglClient extends Client
      */
     public function sendPut($path, $variables = [], $body)
     {
-        $path = uri_template($path, $variables);
+        $path = (new UriTemplate())->expand($path, $variables);
         $variables['body'] = $body;
         return json_decode($this->put($path, $variables)->getBody(), true);
     }
@@ -59,7 +59,7 @@ class TogglClient extends Client
      */
     public function sendPost($path, $variables = [], $body)
     {
-        $path = uri_template($path, $variables);
+        $path = (new UriTemplate())->expand($path, $variables);
         $variables['body'] = $body;
         return json_decode($this->post($path, $variables)->getBody(), true);
     }
