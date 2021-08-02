@@ -38,7 +38,7 @@ class TogglClient extends Client
      *
      * @throws \GuzzleHttp\Exception\ClientException
      */
-    public function sendPut($path, $variables = [], $body)
+    public function sendPut($path, $variables = [], $body = '{}')
     {
         $path = (new UriTemplate())->expand($path, $variables);
         $variables['body'] = $body;
@@ -57,7 +57,7 @@ class TogglClient extends Client
      *
      * @throws \GuzzleHttp\Exception\ClientException
      */
-    public function sendPost($path, $variables = [], $body)
+    public function sendPost($path, $variables = [], $body = '{}')
     {
         $path = (new UriTemplate())->expand($path, $variables);
         $variables['body'] = $body;
