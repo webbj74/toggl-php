@@ -26,11 +26,9 @@ class WorkspaceUserTest extends TestCase
         return $user;
     }
 
-    /**
-     * @expectedException \UnexpectedValueException
-     */
     public function testWorkspaceUserConstructorRequiresArray()
     {
+        $this->expectException(\UnexpectedValueException::class);
         new ApiResponse\WorkspaceUser("foo");
     }
 

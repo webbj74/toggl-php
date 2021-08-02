@@ -16,11 +16,9 @@ class ProjectsTest extends TestCase
         return $projectsData;
     }
 
-    /**
-     * @expectedException \UnexpectedValueException
-     */
     public function testProjectsConstructor()
     {
+        $this->expectException(\UnexpectedValueException::class);
         new ApiResponse\Projects("foo");
     }
 }
