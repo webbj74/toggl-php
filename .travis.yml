@@ -2,7 +2,7 @@ language: php
 
 php:
     - "7.4"
-    #- "8.0"
+    - "8.0"
 env:
   - GUZZLEHTTP="^6.3"
   - GUZZLEHTTP="^7.0"
