@@ -16,11 +16,9 @@ class WorkspacesTest extends TestCase
         return $workspacesData;
     }
 
-    /**
-     * @expectedException \UnexpectedValueException
-     */
     public function testWorkspacesConstructor()
     {
+        $this->expectException(\UnexpectedValueException::class);
         new ApiResponse\Workspaces("foo");
     }
 }

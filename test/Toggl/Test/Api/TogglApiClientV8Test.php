@@ -38,11 +38,9 @@ class TogglApiClientV8Test extends TestCase
             ]);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testRequireAuthenticationKey()
     {
+        $this->expectException(\InvalidArgumentException::class);
         TogglApiClientV8::factory(array(
                 'authentication_method' => 'email',
                 'authentication_value' => 'test-password',
@@ -50,11 +48,9 @@ class TogglApiClientV8Test extends TestCase
             ));
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testRequireAuthenticationValueForEmailAuth()
     {
+        $this->expectException(\InvalidArgumentException::class);
         TogglApiClientV8::factory([
                 'authentication_method' => 'email',
                 'authentication_key' => 'test-username',
@@ -64,11 +60,13 @@ class TogglApiClientV8Test extends TestCase
 
     public function testDontRequireAuthenticationValueForTokenAuth()
     {
-        TogglApiClientV8::factory([
+        $this->assertInstanceOf(TogglApiClientV8::class,
+            TogglApiClientV8::factory([
                 'authentication_method' => 'token',
                 'authentication_key' => 'test-username',
                 'base_path' => '/api/v8',
-            ]);
+            ])
+        );
     }
 
     public function testMeCall()
@@ -91,31 +89,25 @@ class TogglApiClientV8Test extends TestCase
         $this->assertEquals('Sample Workspace 1', "{$workspaces["Sample Workspace 1"]}");
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testWorkspaceProjectsCallRequireNumericWorkspaceId()
     {
+        $this->expectException(\InvalidArgumentException::class);
         $client = $this->getTogglApiClient();
         $client->getWorkspaceProjects("one");
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testWorkspaceProjectsCallRequireEnumActive()
     {
+        $this->expectException(\InvalidArgumentException::class);
         $client = $this->getTogglApiClient();
         $client->getWorkspaceProjects(1, array(
                 'active' => 'foo'
             ));
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testWorkspaceProjectsCallRequireEnumActualHours()
     {
+        $this->expectException(\InvalidArgumentException::class);
         $client = $this->getTogglApiClient();
         $client->getWorkspaceProjects(1, array(
                 'actual_hours' => 'foo'
@@ -124,7 +116,6 @@ class TogglApiClientV8Test extends TestCase
 
     public function testWorkspaceProjectsCall()
     {
-
         $workspaceId = 101;
         $responseData = ProjectsTest::getProjectsData($workspaceId, array("Sample Project 1", "Sample Project 2"));
         $client = $this->getTogglApiClient($responseData);
@@ -136,18 +127,15 @@ class TogglApiClientV8Test extends TestCase
         $this->assertEquals('Sample Project 1', "{$projects["Sample Project 1"]}");
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testWorkspaceUsersCallRequireNumericWorkspaceId()
     {
+        $this->expectException(\InvalidArgumentException::class);
         $client = $this->getTogglApiClient();
         $client->getWorkspaceUsers("one");
     }
 
     public function testWorkspaceUsersCall()
     {
-
         $workspaceId = 101;
         $responseData = WorkspaceUsersTest::getWorkspaceUsersData($workspaceId, array("Sample Name 1", "Sample Name 2"));
         $client = $this->getTogglApiClient($responseData);
@@ -159,20 +147,16 @@ class TogglApiClientV8Test extends TestCase
         $this->assertEquals('Sample Name 1', "{$users["Sample Name 1"]}");
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testCreateProjectCallRequireArrayData()
     {
+        $this->expectException(\InvalidArgumentException::class);
         $client = $this->getTogglApiClient();
         $client->createProject("foo");
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testCreateProjectCallRequireArrayDataElements()
     {
+        $this->expectException(\InvalidArgumentException::class);
         $client = $this->getTogglApiClient();
         $client->createProject(array('foo'));
     }
@@ -189,29 +173,23 @@ class TogglApiClientV8Test extends TestCase
         $this->assertTrue($project instanceof ApiResponse\Project);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testUpdateProjectDataCallRequireNumericProject()
     {
+        $this->expectException(\InvalidArgumentException::class);
         $client = $this->getTogglApiClient();
         $client->updateProjectData("foo", array('project' => array('is_private' => false)));
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testUpdateProjectDataCallRequireNonEmptyData()
     {
+        $this->expectException(\InvalidArgumentException::class);
         $client = $this->getTogglApiClient();
         $client->updateProjectData(1, array());
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testUpdateProjectDataCallRequireArrayData()
     {
+        $this->expectException(\InvalidArgumentException::class);
         $client = $this->getTogglApiClient();
         $client->updateProjectData(1, "foo");
     }

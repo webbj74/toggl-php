@@ -17,11 +17,9 @@ class MeTest extends TestCase
             ));
     }
 
-    /**
-     * @expectedException \UnexpectedValueException
-     */
     public function testMeConstructorRequireArray()
     {
+        $this->expectException(\UnexpectedValueException::class);
         new ApiResponse\Me("foo");
     }
 
